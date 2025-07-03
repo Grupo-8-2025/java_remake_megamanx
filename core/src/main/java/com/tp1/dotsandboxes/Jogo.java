@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -27,13 +28,12 @@ public class Jogo extends Game {
 
     private ArrayList<Texture> texturasMegaMan;
 
-    private Texture texturaFundo;
-
     private SpriteBatch batch;
     private OrthographicCamera camera;
     private Viewport viewport;
 
     private MegaMan megaMan;
+    private Mapa mapa;
 
     @Override
     public void create() {
@@ -48,35 +48,42 @@ public class Jogo extends Game {
 
         carregaTexturas();
         criaPersonagens();
+        criaMapa();
     }
 
     private void carregaTexturas(){
         texturasMegaMan = new ArrayList<Texture>() {{
-            add(new Texture("assets/imagens/MegaMan/megaManDireita.png"));
-            add(new Texture("assets/imagens/MegaMan/megaManEsquerda.png"));
-            add(new Texture("assets/imagens/MegaMan/megaManPulandoDireita.png"));
-            add(new Texture("assets/imagens/MegaMan/megaManPulandoEsquerda.png"));
-            add(new Texture("assets/imagens/MegaMan/megaManSubindo.png"));
-            add(new Texture("assets/imagens/MegaMan/megaManNaEscada.png"));
-            add(new Texture("assets/imagens/MegaMan/megaManSubiuEscada.png"));
+            add(new Texture("imagens/MegaMan/megaManDireita.png"));
+            add(new Texture("imagens/MegaMan/megaManEsquerda.png"));
+            add(new Texture("imagens/MegaMan/megaManPulandoDireita.png"));
+            add(new Texture("imagens/MegaMan/MegaManPulandoEsquerda.png"));
+            add(new Texture("imagens/MegaMan/MegaManSubindo.png"));
+            add(new Texture("imagens/MegaMan/MegaManNaEscada.png"));
+            add(new Texture("imagens/MegaMan/MegaManSubiuEscada.png"));
         }};
 
-        texturaFundo = new Texture("assets/imagens/ChilPenguin/mapa.png");
-        System.err.println(texturaFundo.getWidth() + " x " + texturaFundo.getHeight());
-
+        // Textura de fundo agora é gerenciada pela classe Mapa
+        // texturaFundo = new Texture("assets/imagens/ChilPenguin/mapa.png");
     }
 
     private void criaPersonagens(){
         megaMan = new MegaMan(texturasMegaMan.get(0), 100, 100);
     }
 
+    private void criaMapa(){
+        mapa = new Mapa("imagens/ChilPenguin/mapa.png", 800, 600);
+    }
+
     @Override
     public void render() {
-        camera.update(); // Atualiza a câmera
-        batch.setProjectionMatrix(camera.combined); 
+        // Usar a câmera do mapa
+        OrthographicCamera mapaCamera = mapa.getCamera();
+        mapaCamera.setToOrtho(false, 800, 600);
+        mapaCamera.update();
+        batch.setProjectionMatrix(mapaCamera.combined); 
         
         Gdx.gl.glClearColor(255f, 255f, 255f, 1);
-        Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         desenhaItens();
         moverItens();
@@ -86,8 +93,10 @@ public class Jogo extends Game {
 
     private void desenhaItens(){
         batch.begin();
+        // Desenhar o fundo do mapa
+        batch.draw(mapa.getBackgroundImage(), 0, -250, 10327, 1649);
+        // Desenhar o personagem
         megaMan.getCorpo().draw(batch);
-        batch.draw(texturaFundo, 800, 500);
         batch.end();
     }
 
@@ -107,6 +116,17 @@ public class Jogo extends Game {
 
     @Override
     public void dispose() {
+        if (mapa != null) {
+            mapa.dispose();
+        }
+        if (batch != null) {
+            batch.dispose();
+        }
+        // Liberar texturas do MegaMan
+        for (Texture texture : texturasMegaMan) {
+            texture.dispose();
+        }
+        // texturaFundo agora é gerenciada pela classe Mapa
         super.dispose();
     }
 

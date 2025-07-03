@@ -1,4 +1,3 @@
-.gitkeep
 GAMERIA.ttf
 font.ttf
 imagens/Armadillo/fundo.png
