@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -30,6 +31,7 @@ public class Jogo extends Game {
 
     private SpriteBatch batch;
     private OrthographicCamera camera;
+    private Vector2 cameraFoco;
     private Viewport viewport;
 
     private MegaMan megaMan;
@@ -43,9 +45,10 @@ public class Jogo extends Game {
     private void criaObjetosJogo(){
         batch = new SpriteBatch();
         camera = new OrthographicCamera();
+        cameraFoco = new Vector2();
         camera.setToOrtho(false, 800, 600);
         viewport = new FillViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
+        
         carregaTexturas();
         criaPersonagens();
         criaMapa();
@@ -77,10 +80,11 @@ public class Jogo extends Game {
     @Override
     public void render() {
         // Usar a câmera do mapa
-        OrthographicCamera mapaCamera = mapa.getCamera();
-        mapaCamera.setToOrtho(false, 800, 600);
-        mapaCamera.update();
-        batch.setProjectionMatrix(mapaCamera.combined); 
+        //OrthographicCamera mapaCamera = mapa.getCamera();
+        cameraFoco.set(megaMan.getPosX(), megaMan.getPosY());
+        camera.position.set(cameraFoco, 0);
+        camera.update();
+        batch.setProjectionMatrix(camera.combined); 
         
         Gdx.gl.glClearColor(255f, 255f, 255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
