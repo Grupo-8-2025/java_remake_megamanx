@@ -34,3 +34,4 @@ imagens/Spark/inimigos/ostrich.jpg
 imagens/Spark/inimigos/rider.jpg
 imagens/Spark/inimigos/wheeler.jpg
 imagens/Spark/mapa.png
+mapaDimensionado.tmx

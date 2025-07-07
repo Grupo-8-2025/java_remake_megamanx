@@ -53,7 +53,6 @@ public class Jogo extends Game {
         criaPersonagens();
         criaMapa();
     }
-
     private void carregaTexturas(){
         texturasMegaMan = new ArrayList<Texture>() {{
             add(new Texture("imagens/MegaMan/megaManDireita.png"));
