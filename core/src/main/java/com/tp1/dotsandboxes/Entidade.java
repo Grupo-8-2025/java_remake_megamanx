@@ -1,64 +1,58 @@
 package com.tp1.dotsandboxes;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Entidade {
-    
-    protected Texture textura;
-    protected Sprite corpo;
-    protected float posX;
-    protected float posY;
 
-    public Entidade(){
-        posX = 0;
-        posY = 0;
-    }
+	protected Texture textura;
+	protected TextureRegion region;
+	protected Sprite corpo;
+	protected float posX;
+	protected float posY;
 
-    public Entidade(Texture textura, float posX, float posY, TextureRegion region, Vector2 escala){
-        this.posX = posX;
-        this.posY = posY;
-        this.textura = textura;
-        this.corpo = new Sprite(textura);
+	public Entidade(Texture textura, TextureRegion region, float posX, float posY, Vector2 escala) {
+		this.textura = textura;
+		this.region = region;
+		this.posX = posX;
+		this.posY = posY;
+
+		this.corpo = new Sprite(textura);
         this.corpo.setRegion(region);
         this.corpo.setScale(escala.x, escala.y);
         this.corpo.setPosition(posX, posY);
         this.corpo.setOrigin(this.corpo.getBoundingRectangle().width/2, this.corpo.getBoundingRectangle().height/2);
-    }
+	}
 
-    public Sprite getCorpo() {
-        return corpo;
-    }
+	public void setTextura(Texture textura) {
+		this.textura = textura;
+	}
 
-    public float getPosX() {
-        return posX;
-    }
+	public Sprite getCorpo() {
+		return corpo;
+	}
 
-    public void setPosX(float posX) {
-        this.posX = posX;
-    }
+	public float getPosX() {
+		return posX;
+	}
 
-    public float getPosY() {
-        return posY;
-    }
+	public void setPosX(float posX) {
+		this.posX = posX;
+	}
 
-    public void setPosY(float posY) {
-        this.posY = posY;
-    }
+	public float getPosY() {
+		return posY;
+	}
 
-    public void setPosicao(float x, float y){
-        setPosX(x);
-        setPosY(y);
-        corpo.setPosition(x, y);
-    }
+	public void setPosY(float posY) {
+		this.posY = posY;
+	}
 
-    public void setTexturaCorpo(Texture textura, TextureRegion region, Vector2 escala){
-        this.corpo.setTexture(textura);
-        this.corpo.setRegion(region);
-        this.corpo.setScale(escala.x, escala.y);
-        //this.corpo.setScale(0.4f, 2f);
-    }
+	public void draw(SpriteBatch batch) {
+		corpo.draw(batch);
+	}
 
 }

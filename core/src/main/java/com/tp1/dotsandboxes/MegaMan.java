@@ -1,262 +1,219 @@
 package com.tp1.dotsandboxes;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public class MegaMan extends Personagem{
-    
-    private boolean ganhouJogo;
-    private boolean paraEsquerda;
-    private boolean paraDireita;
-    private boolean pegouMartelo;
-    private boolean apertouX;
-    private boolean naEscada;
-    private boolean noAr;
+public class MegaMan extends PersonagemMovel {
 
-    private boolean apertouRight;
-    private boolean apertouLeft;
-    private boolean apertouUp;
-    private boolean apertouDown;
+	private boolean apertouRight;
+	private boolean apertouLeft;
+	private boolean apertouUp;
+	private boolean apertouDown;
+	//private boolean apertouX;
+	//private boolean segurouC;
+	//private boolean segurouShift;
+	private boolean naEscada;
+	private boolean naParede;
+	private boolean noRider;
+	private boolean podeAtacar;
+	private boolean ganhouJogo;
+	private boolean isMegaMan;
 
-    private int vidas;
-    private int moedas;
-    //private Sound somAndar;
-    //private Sound somPular;
-    //private Sound somNoTubo;
+	public MegaMan(Texture textura, float posX, float posY) {
+		super(textura, new TextureRegion(textura, 0, 0, 34, 46), posX, posY, 
+		new Vector2(0.1f, 3.0f), 16, 0, 0);
+		apertouRight = false;
+		apertouLeft = false;
+		apertouUp = false;
+		apertouDown = false;
+		//apertouX = false;
+		//segurouC = false;
+		//segurouShift = false;
+		naEscada = false;
+		naParede = false;
+		noRider = false;
+		podeAtacar = true;
+		ganhouJogo = false;
 
-    MegaMan(Texture textura, float posX, float posY){
-        super(textura, posX, posY, new TextureRegion(textura, 0, 0, 28, 35), new Vector2(0.3f, 3.0f), 0, 0);
-        ganhouJogo = false;
-        paraEsquerda = false;
-        paraDireita = true;
-        pegouMartelo = false;
-        apertouX = false;
-        naEscada = false;
-        noAr = false;
-        apertouRight = false;
-        apertouLeft = false;
-        vidas = 3;
-        moedas = 0;
+		paraDireita = true;
+		paraEsquerda = false;
+	}
 
-        //somAndar = Gdx.audio.newSound(Gdx.files.internal("somAndarMario.wav"));
-        //setVolume
-        //somPular = Gdx.audio.newSound(Gdx.files.internal("somPularMario.wav"));
-        //setVolume
-        //somNoTubo = Gdx.audio.newSound(Gdx.files.internal("somTubo.wav"));
-        //setVolume
-    }
+	public boolean isNaEscada() {
+		return naEscada;
+	}
 
-    public boolean isGanhouJogo() {
-        return ganhouJogo;
-    }
+	public void setNoAr(boolean noAr) {
+		this.noAr = noAr;
+	}
 
-    public void setGanhouJogo(boolean ganhouJogo) {
-        this.ganhouJogo = ganhouJogo;
-    }
+	public boolean getNoAr(){
+		return noAr;
+	}
 
-    public boolean isParaEsquerda() {
-        return paraEsquerda;
-    }
+	public void setNaEscada(boolean naEscada) {
+		this.naEscada = naEscada;
+	}
 
-    public void setParaEsquerda(boolean paraEsquerda) {
-        this.paraEsquerda = paraEsquerda;
-    }
+	public boolean isNaParede() {
+		return naParede;
+	}
 
-    public boolean isParaDireita() {
-        return paraDireita;
-    }
+	public void setNaParede(boolean naParede) {
+		this.naParede = naParede;
+	}
 
-    public void setParaDireita(boolean paraDireita) {
-        this.paraDireita = paraDireita;
-    }
+	public boolean isNoRider() {
+		return noRider;
+	}
 
-    public boolean isPegouMartelo() {
-        return pegouMartelo;
-    }
+	public void setNoRider(boolean noRider) {
+		this.noRider = noRider;
+	}
 
-    public void setPegouMartelo(boolean pegouMartelo) {
-        this.pegouMartelo = pegouMartelo;
-    }
+	public boolean isGanhouJogo() {
+		return ganhouJogo;
+	}
 
-    public boolean isApertouX() {
-        return apertouX;
-    }
+	public void setGanhouJogo(boolean ganhouJogo) {
+		this.ganhouJogo = ganhouJogo;
+	}
 
-    public void setApertouX(boolean apertouX) {
-        this.apertouX = apertouX;
-    }
-
-    public boolean isNaEscada() {
-        return naEscada;
-    }
-
-    public void setNaEscada(boolean naEscada) {
-        this.naEscada = naEscada;
-    }
-
-    public boolean isNoAr() {
-        return noAr;
-    }
-
-    public void setNoAr(boolean noAr) {
-        this.noAr = noAr;
-    }
-
-    public int getVidas() {
-        return vidas;
-    }
-
-    public void setVidas(int vidas) {
-        this.vidas = vidas;
-    }
-
-    public int getMoedas() {
-        return moedas;
-    }
-
-    public void setMoedas(int moedas) {
-        this.moedas = moedas;
-    }
-
-    public boolean testarTecla(int tecla){
-        if(Gdx.input.isKeyPressed(tecla)){
+	private boolean testarTecla(int tecla) {
+		if(Gdx.input.isKeyPressed(tecla)){
             return true;
         }else return false;
-    }
+	}
 
-    public void moverParaDireita(Texture textura){
-        if(testarTecla(Input.Keys.RIGHT) && (podeAndar)){
+	public void setVelocidadeX(float velX){
+		this.velX = velX;
+	}
+	public void setVelocidadeY(float velY){
+		this.velY = velY;
+	}
+
+
+	@Override
+	public void mover() {
+		moverParaDireita();
+		moverParaEsquerda();
+		pular();
+		subirEscada();
+		descerEscada();
+		subirParede();
+		descerParede();
+		dash();
+	}
+
+	@Override
+	protected void moverParaDireita(){
+        if(testarTecla(Input.Keys.RIGHT)){
             paraDireita = true;
             paraEsquerda = false;
             apertouRight = true;
+			isMegaMan = false;
+
             velX = 5;
             posX = posX + velX;
             setPosicao(posX, posY);
             
-            int x = (int) posX / 50 % 11;
-            x = x * 34;
-            this.textura = textura;
-            setTexturaCorpo(this.textura, new TextureRegion(this.textura, x, 0, 34, 34), new Vector2(0.3f, 3.0f));
-            
+			animar(posX, 11, 34, 0, 0, 34, 46, isMegaMan);
         }else{
             if(apertouRight){
-                setTexturaCorpo(this.textura, new TextureRegion(this.textura, 0, 0, 34, 34), new Vector2(0.3f, 3.0f));
+                setRegion(0, 0, 34, 46, isMegaMan); 
                 apertouRight = false;
             }
         }
     }
 
-    public void moverParaEsquerda(Texture textura){
-        if(testarTecla(Input.Keys.LEFT) && (podeAndar)){
+	@Override
+	protected void moverParaEsquerda() {
+		if(testarTecla(Input.Keys.LEFT)){
             paraDireita = false;
             paraEsquerda = true;
             apertouLeft = true;
+			isMegaMan = true;
+
             velX = -5;
             posX = posX + velX;
             setPosicao(posX, posY);
-  
-            int x = (int) posX / 50 % 11;
-            x = x * 34;
-            this.textura = textura;
-            setTexturaCorpo(this.textura, new TextureRegion(this.textura, 374-x, 0, 34, 34), new Vector2(0.3f, 3.0f));
             
+			animar(posX, 11, 34, 0, 0, 34, 46, isMegaMan);
         }else{
             if(apertouLeft){
-                setTexturaCorpo(this.textura, new TextureRegion(this.textura, 374-34, 0, 34, 34), new Vector2(0.3f, 3.0f));
+                setRegion(0, 0, 34, 46, isMegaMan); 
                 apertouLeft = false;
             }
         }
-    }
+	}
 
-    public void subirEscada(Texture texturaSubindo, Texture texturaNaEscada){
-        if(testarTecla(Input.Keys.UP) && (podeAndar)){
+	@Override
+	protected void pular() {
+		if(testarTecla(Input.Keys.SPACE) && (!noAr)){
+            noAr = true;
+            velY = 5;
+            posY = posY + velY;            
+            setPosicao(posX, posY);
+
+        }
+		sofrerGravidade(posY, 7, 34, 374, 0, 34, 46, 578, 0, 34, 46, isMegaMan);
+	}
+
+	private void subirEscada() {
+		if(testarTecla(Input.Keys.UP)){
             apertouUp = true;
             velY = 5;
             posY = posY + velY;
             setPosicao(posX, posY);
 
-            int x = (int) posY / 50 % 4;
-            x = x * 20;
-            this.textura = texturaSubindo;
-            setTexturaCorpo(this.textura, new TextureRegion(this.textura, x, 0, 20, 46), new Vector2(0.2f, 4.0f));
-
+            animar(posY, 4, 34, 612, 0, 34, 46, true); 
         }else{
             if(apertouUp){
-                this.textura = texturaNaEscada;
-                setTexturaCorpo(this.textura, new TextureRegion(this.textura, 0, 0, 21, 36), new Vector2(0.2f, 3.0f));
+                setRegion(816, 0, 34, 46); 
                 apertouUp = false;
             }
         }
-    }
+	}
 
-    public void descerEscada(Texture texturaSubindo, Texture texturaNaEscada){
-        if(testarTecla(Input.Keys.DOWN) && (podeAndar)){
+	private void descerEscada() {
+		if(testarTecla(Input.Keys.DOWN)){
             apertouDown = true;
             velY = -5;
             posY = posY + velY;
             setPosicao(posX, posY);
 
-            int x = (int) posY / 50 % 4;
-            x = x * 20;
-            this.textura = texturaSubindo;
-            setTexturaCorpo(this.textura, new TextureRegion(this.textura, 80-x, 0, 20, 46), new Vector2(0.2f, 4.0f));
-            
+            animar(posY, 4, 34, 612, 0, 34, 46, true); 
         }else{
             if(apertouDown){
-                this.textura = texturaNaEscada;
-                setTexturaCorpo(this.textura, new TextureRegion(this.textura, 0, 0, 21, 36), new Vector2(0.2f, 3.0f));
+                setRegion(816, 0, 34, 46); 
                 apertouDown = false;
             }
         }
-    }
+	}
 
-    public void pular(Texture texturaPulandoDireita, Texture texturaPulandoEsquerda){
-        if(testarTecla(Input.Keys.SPACE) && (!noAr)){
-            noAr = true;
-            velY = 5;
-            posY = posY + velY;            
-            setPosicao(posX, posY);
-        }
-        if(paraDireita){
-            sofrerGravidade(texturaPulandoDireita);
-        }else if(paraEsquerda){
-            sofrerGravidade(texturaPulandoEsquerda);
-        }
-        
-    }
+	public boolean getIsMegaMan(){
+		return this.isMegaMan;
+	}
 
-    public void sofrerGravidade(Texture textura){
-        if(noAr){
-            velY = velY - (gravidade * deltaTime);
-            setPosicao(posX, posY+velY);
+	private void subirParede() {
 
-            this.textura = textura;
-            int x = (int) posY / 100 % 7;
-            x = x * 30;
+	}
 
-            if(paraDireita){
-                setTexturaCorpo(this.textura, new TextureRegion(this.textura, x, 0, 30, 46), new Vector2(0.3f, 4.0f));
-            }else if(paraEsquerda){
-                setTexturaCorpo(this.textura, new TextureRegion(this.textura, 210-x, 0, 30, 46), new Vector2(0.3f, 4.0f));
-            }
+	private void descerParede() {
 
-            if (posY <= 200) {
-                posY = 200;
-                velY = 0;
-                noAr = false;
-                if(paraDireita){
-                    setTexturaCorpo(this.textura, new TextureRegion(this.textura, 210-30, 0, 30, 46), new Vector2(0.3f, 4.0f));
-                }else if(paraEsquerda){
-                    setTexturaCorpo(this.textura, new TextureRegion(this.textura, 0, 0, 30, 46), new Vector2(0.3f, 4.0f));
-                }
-            }
-        }
-    }
-    
+	}
+
+	private void dash() {
+
+	}
+
+	@Override
+	public void tomarDano(int dano) {
+
+	}
+
 }

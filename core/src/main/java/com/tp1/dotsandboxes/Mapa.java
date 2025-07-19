@@ -1,66 +1,69 @@
 package com.tp1.dotsandboxes;
 
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 
 public class Mapa {
-    
-    private String imagePath;
-    private static int window_width;
-    private static int window_height;
-    private OrthogonalTiledMapRenderer renderer;
+
     private OrthographicCamera camera;
-    private Rectangle viewport;
-    private Texture background_image;
-	private Stage stage;
-	
+    private OrthogonalTiledMapRenderer renderizadorMapa;
+    private TiledMap mapa;
+    private Array<Rectangle> retangulosColisao;
+    private float escala = 3.8f;
 
-    public Mapa(String imagePath, int window_width, int window_height) {
-        this.imagePath = imagePath;
-        Mapa.window_width = window_width;
-        Mapa.window_height = window_height;
+    public Mapa(String pathMapaTmx, int largura, int altura) {
         this.camera = new OrthographicCamera();
-        this.camera.setToOrtho(false, window_width, window_height);
-        this.viewport = new Rectangle(0, 0, window_width, window_height);
-        this.background_image = new Texture(imagePath);
-        this.renderer = new OrthogonalTiledMapRenderer(null); 
+        this.camera.setToOrtho(false, largura, altura);
+
+        this.mapa = new TmxMapLoader().load(pathMapaTmx);
+        this.renderizadorMapa = new OrthogonalTiledMapRenderer(mapa, escala);
+
+        carregarColisores("ColisoesHorizontais");
     }
 
-    public OrthogonalTiledMapRenderer getRenderer() {
-        return renderer;
-    }
+    private void carregarColisores(String nomeCamada) {
+        retangulosColisao = new Array<>();
+        MapLayer camada = mapa.getLayers().get(nomeCamada);
+        if (camada == null) {
+            System.out.println("camada indisponivel" + nomeCamada);
+            return;
+        }
 
-    public OrthographicCamera getCamera() {
-        return camera;
-    }
-
-    public Rectangle getViewport() {
-        return viewport;
-    }
-
-    public Texture getBackgroundImage() {
-        return background_image;
-    }
-
-    public Stage getStage() {
-        return stage;
-    }
-
-    public void updateCamera() {
-        camera.update();
-    }
-
-    public void render() {
-        updateCamera();
-        // Pode ser usado para renderizar tiles se necessário
-    }
-
-    public void dispose() {
-        if (background_image != null) {
-            background_image.dispose();
+        for (MapObject objeto : camada.getObjects()) {
+            if (objeto instanceof RectangleMapObject) {
+                Rectangle rect = ((RectangleMapObject) objeto).getRectangle();
+                rect.set(
+                    rect.x * escala,
+                    rect.y * escala,
+                    rect.width * escala,
+                    rect.height * escala
+                );
+                retangulosColisao.add(rect);
+            }
         }
     }
+
+    public Array<Rectangle> getRetangulosColisao() {
+        return retangulosColisao;
+    }
+
+    public Array<Rectangle> getChoes() {
+        return retangulosColisao;
+    }
+
+    public void render(OrthographicCamera camera) {
+        this.camera = camera;
+        this.camera.update();
+        renderizadorMapa.setView(this.camera);
+        renderizadorMapa.render();
+    }
+
+    public void dispose() {}
 }
