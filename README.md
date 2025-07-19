@@ -1,4 +1,4 @@
-# Jogo-DotsAndBoxes
+# Jogo-MegaManX
 
 A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
 
@@ -30,4 +30,13 @@ Useful Gradle tasks and flags:
 - `test`: runs unit tests (if any).
 
 Note that most tasks that are not specific to a single project can be run with `name:` prefix, where the `name` should be replaced with the ID of a specific project.
+
+## Link Do Relatório Técnico
+[Relatório Técnico](https://docs.google.com/document/d/10jIZ7w_T9xnYYpN8TUbrrdX7LQetovOOtWqiMzZMLGo/edit?usp=sharing)
+
+## Para Rodar
+
+```bash
+gradle run or gradlew run
+```
 For example, `core:clean` removes `build` folder only from the `core` project.
