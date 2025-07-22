@@ -32,13 +32,14 @@ public class Mapa {
         retangulosColisao = new Array<>();
         MapLayer camada = mapa.getLayers().get(nomeCamada);
         if (camada == null) {
-            System.out.println("camada indisponivel" + nomeCamada);
+            System.out.println("Camada de colisão não encontrada: " + nomeCamada);
             return;
         }
 
         for (MapObject objeto : camada.getObjects()) {
             if (objeto instanceof RectangleMapObject) {
                 Rectangle rect = ((RectangleMapObject) objeto).getRectangle();
+                
                 rect.set(
                     rect.x * escala,
                     rect.y * escala,
@@ -48,14 +49,20 @@ public class Mapa {
                 retangulosColisao.add(rect);
             }
         }
+
+        System.out.println("Colisores carregados: " + retangulosColisao.size);
     }
 
     public Array<Rectangle> getRetangulosColisao() {
         return retangulosColisao;
     }
 
-    public Array<Rectangle> getChoes() {
+    public Array<Rectangle> getChaos() {
         return retangulosColisao;
+    }
+
+    public float getEscala() {
+        return escala;
     }
 
     public void render(OrthographicCamera camera) {
@@ -65,5 +72,8 @@ public class Mapa {
         renderizadorMapa.render();
     }
 
-    public void dispose() {}
+    public void dispose() {
+        mapa.dispose();
+        renderizadorMapa.dispose();
+    }
 }

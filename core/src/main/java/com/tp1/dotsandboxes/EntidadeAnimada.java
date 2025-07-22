@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 public class EntidadeAnimada extends Entidade {
 
 	protected float deltaTime;
+	
 	protected boolean paraEsquerda;
 	protected boolean paraDireita;
 
@@ -17,50 +18,41 @@ public class EntidadeAnimada extends Entidade {
 		paraEsquerda = true;
 		paraDireita = false;
 	}
-
-	protected void iterarDeltaTime() {
-		deltaTime += Gdx.graphics.getDeltaTime();
-	}
-
-	protected void animar(float posicao, int qtdFrames, int incrementa, int cordX, int cordY, int largura, int altura, boolean isMegaMan) {
-		int x = (int) posicao / 50 % qtdFrames;
-        x = x * incrementa;
-        setRegion(cordX + x, cordY, largura, altura, isMegaMan); 
-	}
-
-	public void animar(int qtdFrames, int incrementa, int cordX, int cordY, int largura, int altura) {
-		iterarDeltaTime();
-		int frame = (int)(deltaTime / 0.25f) % qtdFrames; 
-        int x = frame * incrementa; 
-        setRegion(cordX + x, cordY, largura, altura); 
-	}
-
-	protected void setRegion(int cordX, int cordY, int largura, int altura, boolean isMegaMan) {
-		region.setRegion(cordX, cordY, largura, altura);
-
-		if(isMegaMan){
-			boolean flipou = region.isFlipX();
-        	if(paraEsquerda != flipou) {
-            	region.flip(true, false);
-        	}
-		}else{
-			boolean flipou = region.isFlipX();
-        	if(paraDireita != flipou) {
-            	region.flip(true, false);
-        	}
-		}
-		corpo.setRegion(region);
-	}
+	
 
 	protected void setRegion(int cordX, int cordY, int largura, int altura) {
-		region.setRegion(cordX, cordY, largura, altura);	
+		region.setRegion(cordX, cordY, largura, altura);
+
+		boolean flipou = region.isFlipX();
+		if(paraDireita != flipou) {
+			region.flip(true, false);
+		}
+
 		corpo.setRegion(region);
-	} 
+	}
 
 	public void setPosicao(float posX, float posY) {
 		setPosX(posX);
         setPosY(posY);
         corpo.setPosition(posX, posY);
+	}
+
+
+	protected void iterarDeltaTime() {
+		deltaTime += Gdx.graphics.getDeltaTime();
+	}
+
+	protected void animar(float posicao, int qtdFrames, int incrementa, int cordX, int cordY, int largura, int altura) {
+		int x = (int) posicao / 50 % qtdFrames;
+        x = x * incrementa;
+        setRegion(cordX + x, cordY, largura, altura); 
+	}
+
+	public void animar(int qtdFrames, int incrementa, int cordX, int cordY, int largura, int altura) {
+		iterarDeltaTime();
+		int frame = (int)(deltaTime / 0.15f) % qtdFrames; 
+        int x = frame * incrementa; 
+        setRegion(cordX + x, cordY, largura, altura); 
 	}
 
 }

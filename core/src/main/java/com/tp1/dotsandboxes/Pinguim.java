@@ -1,68 +1,266 @@
 package com.tp1.dotsandboxes;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Rectangle;
 
-public class Pinguim extends Chefao {
+public class Pinguim extends Chefao implements Inimigo {
 
-	private EntidadeAnimada protecao;
+	private float posXmegaMan;
+	private int ataqueAtual;
+	private ArrayList<Ataque> ataques;
+	private ArrayList<Ataque> ataquesAtivos;
+	private ArrayList<Personagem> pinguinsGelo;
 
 	public Pinguim(Texture textura, float posX, float posY) {
 		super(textura, new TextureRegion(textura, 602, 0, 43, 60), posX, posY, 
-		new Vector2(0.1f, 3.0f), 32, 0, 0);
-				
-		protecao = new EntidadeAnimada(new Texture("imagens/ChilPenguin/inimigos/Penguin/protecao.png"), 
-		new TextureRegion(textura, 0, 0, 14, 32), posX-30, posY, new Vector2(0.1f, 3.0f));	
+		new Vector2(0.1f, 3.0f), 32, 0.05f, null,  0, 0);	
+		posXmegaMan = 0;
+
+		paraEsquerda = true;
+		paraDireita = false;
+		naPlataforma = false;
+		quantAcoes = 5;
+
+		criarAtaques();
+		criarPinguinsGelo();
 	}
 
-    private void delimitarMovimento(){
-        if(posX <= 0 + 43){
-            paraEsquerda = false;
-            paraDireita = true;
-        }else if(posX >= 800){
-            paraDireita = false;
-            paraEsquerda= true;
-        }
-    }
+	public void criarAtaques(){
+		ataqueAtual = 0;
+		ataquesAtivos = new ArrayList<>();
+
+		ataques = new ArrayList<>();
+
+		ataques.add(
+			new Ataque(new TextureRegion(TipoAtaque.BOLA_GELO.getTextura(), 
+			TipoAtaque.BOLA_GELO.getCordX1(), TipoAtaque.BOLA_GELO.getCordY1(),
+			TipoAtaque.BOLA_GELO.getLargura1(), TipoAtaque.BOLA_GELO.getAltura1()), 
+			-100, -100, new Vector2(1f, 2.5f), TipoAtaque.BOLA_GELO, 0)
+		);
+
+		ataques.add(
+			new Ataque(new TextureRegion(TipoAtaque.SOPRO_GELO.getTextura(), 
+			TipoAtaque.SOPRO_GELO.getCordX1(), TipoAtaque.SOPRO_GELO.getCordY1(),
+			TipoAtaque.SOPRO_GELO.getLargura1(), TipoAtaque.SOPRO_GELO.getAltura1()), 
+			-100, -100, new Vector2(1f, 2.5f), TipoAtaque.SOPRO_GELO, 0)
+		);
+
+		ataques.add(
+			new Ataque(new TextureRegion(TipoAtaque.PINGUIN_GELO.getTextura(), 
+			TipoAtaque.PINGUIN_GELO.getCordX1(), TipoAtaque.TIRO_AZUL.getCordY1(),
+			TipoAtaque.PINGUIN_GELO.getLargura1(), TipoAtaque.PINGUIN_GELO.getAltura1()), 
+			-100, -100, new Vector2(1f, 3f), TipoAtaque.PINGUIN_GELO, 0)
+		);
+
+		ataque = ataques.get(0);
+	}
+
+	public void criarPinguinsGelo(){
+		pinguinsGelo = new ArrayList<>();
+
+		pinguinsGelo.add(new Personagem(TipoAtaque.PINGUIN_GELO.getTextura(), 
+		new TextureRegion(TipoAtaque.PINGUIN_GELO.getTextura(), 
+		TipoAtaque.PINGUIN_GELO.getCordX2(), TipoAtaque.PINGUIN_GELO.getCordY2(),
+		TipoAtaque.PINGUIN_GELO.getLargura2(), TipoAtaque.PINGUIN_GELO.getAltura2()), 
+		-100, -100, new Vector2(1f, 3f), 
+		5, 0, null));
+
+		pinguinsGelo.add(new Personagem(TipoAtaque.PINGUIN_GELO.getTextura(), 
+		new TextureRegion(TipoAtaque.PINGUIN_GELO.getTextura(), 
+		TipoAtaque.PINGUIN_GELO.getCordX2(), TipoAtaque.PINGUIN_GELO.getCordY2(),
+		TipoAtaque.PINGUIN_GELO.getLargura2(), TipoAtaque.PINGUIN_GELO.getAltura2()), 
+		-100, -100, new Vector2(1f, 3f), 
+		5, 0, null));
+
+		pinguinsGelo.add(new Personagem(TipoAtaque.PINGUIN_GELO.getTextura(), 
+		new TextureRegion(TipoAtaque.PINGUIN_GELO.getTextura(), 
+		TipoAtaque.PINGUIN_GELO.getCordX2(), TipoAtaque.PINGUIN_GELO.getCordY2(),
+		TipoAtaque.PINGUIN_GELO.getLargura2(), TipoAtaque.PINGUIN_GELO.getAltura2()), 
+		-100, -100, new Vector2(1f, 3f), 
+		5, 0, null));
+	}
+
+
+	public Rectangle getRect(){
+		return corpo.getBoundingRectangle();
+	}
+
+    public float getDano() {
+		return dano;
+	}
+
+	public void setPosXmegaMan(float posXmegaMan) {
+		this.posXmegaMan = posXmegaMan;
+	}
+
+	public ArrayList<Personagem> getPinguinsGelo() {
+		return pinguinsGelo;
+	}
+
+	@Override
+	protected void setRegion(int cordX, int cordY, int largura, int altura) {
+		region.setRegion(cordX, cordY, largura, altura);
+
+		boolean flipou = region.isFlipX();
+		if(paraDireita != flipou) {
+			region.flip(true, false);
+		}
+
+		corpo.setRegion(region);
+	}
+
+
+	public void atualizar(){
+		if(!morreu){
+			tomandoDanoPorAtaque(1, 43, 731, 0, 43, 60, 
+			0, 0, 43, 60);
+
+			sofrerGravidade(posY, 1, 0, 602, 0, 43, 
+			60, 0, 0, 43, 60);
+
+			delimitarMovimento();
+
+			int acaoAnterior = determinaAcao;
+			iterarDeltaTime();
+			atualizarAcao();
+			
+			if(!noAr){
+				if(determinaAcao != acaoAnterior){
+					if(determinaAcao == 0){
+						determinarAcaoMover();
+					}else if(determinaAcao == 1){
+						determinarAcaoParado();
+					}else if(determinaAcao == 2){
+						determinarAtaqueBolaGelo();
+					}else if(determinaAcao == 3){
+						determinarAtaqueSoproGelo();
+					}else if(determinaAcao == 4){
+						determinarAtaquePinguinGelo();
+					}
+				} 
+			}
+
+		}
+	}
+
+	private void determinarAcaoMover(){
+		duracaoAcao = 3.f;
+		podeMover = true;
+		podeAtacar = false;
+	}
+
+	private void determinarAcaoParado(){
+		duracaoAcao = 3f;
+		parado(3, 43, 0, 0, 43, 60);
+		podeAtacar = false;
+		podeMover = false;
+	}
+
+	private void determinarAtaqueBolaGelo(){
+		duracaoAcao = 2.f;
+		ataqueAtual = 0;
+		//ataque = ataques.get(ataqueAtual);
+		podeAtacar = true;
+		podeMover = false;
+	}
+
+	private void determinarAtaqueSoproGelo(){
+		duracaoAcao = 2f;
+		ataqueAtual = 1;
+		//this.ataque = ataques.get(ataqueAtual);
+		podeAtacar = true;
+		podeMover = false;
+	}
+
+	private void determinarAtaquePinguinGelo(){
+		duracaoAcao = 3.f;
+		ataqueAtual = 2;
+		//ataque = ataques.get(ataqueAtual);
+		podeAtacar = true;
+		podeMover = false;
+
+		float posXpinguin = corpo.getX() - corpo.getBoundingRectangle().width;
+		float posYpinguin = corpo.getY() - corpo.getBoundingRectangle().height/2;
+		pinguinsGelo.get(0).setPosicao(posXpinguin, posYpinguin);
+	}
+
+	private void delimitarMovimento(){
+		if(posX <= 140){
+			paraDireita = true;
+			paraEsquerda = false;
+		} else if(posX >= 1020){
+			paraEsquerda = true;
+			paraDireita = false;
+		}
+	}
 
 	@Override
 	public void mover() {
-		delimitarMovimento();
-		sofrerGravidade(posY, 1, 0, 602, 0, 43, 
-		60, 0, 0, 43, 60, false);
-        
-		iterarDeltaTime();
-		atualizarMovimentoAleatorio();
+		if (podeMover) {
+			if (posXmegaMan < posX) {
+				moverParaEsquerda(1, 43, 301, 0, 43, 60);
+			} else if (posXmegaMan > posX) {
+				moverParaDireita(1, 43, 301, 0, 43, 60);
+			}
+		} else {
+			if (posXmegaMan < posX) {
+				paraDireita = false;
+				paraEsquerda = true;
+			} else if (posXmegaMan > posX) {
+				paraDireita = true;
+				paraEsquerda = false;
+			}
+			setRegion(0, 0, 43, 60); 
+		}
+	}
 
-        if(!noAr){
-            if(determinaAcao == 0){
-				duracaoAcao = 5.0f;
-                moverParaDireita();
-            }else if(determinaAcao == 1){
-				duracaoAcao = 5.0f;
-                moverParaEsquerda();
-            }else if(determinaAcao == 2){
-				duracaoAcao = 5.0f;
-                parado();
-            }
-        }
+
+	@Override
+	public void atacar(){
+		if(podeAtacar &&  deltaTime <= 0.05f){
+			setRegion(688, 0, 43, 60);
+			float posXataque = corpo.getX() - corpo.getBoundingRectangle().width;
+			float posYataque = corpo.getY() - corpo.getBoundingRectangle().height/2;
+
+			int velocidadeAtaque = 0;
+			if(posXmegaMan > posX){
+				paraDireita = true;
+				paraEsquerda = false;
+				velocidadeAtaque = 5;
+			}else if(posXmegaMan < posX){
+				paraDireita = false;
+				paraEsquerda = true;
+				velocidadeAtaque = -5;
+			}
+
+			Ataque novoAtaque = new Ataque(
+				new TextureRegion(ataques.get(ataqueAtual).getTipo().getTextura(),
+				ataques.get(ataqueAtual).getTipo().getCordX1(), ataques.get(ataqueAtual).getTipo().getCordY1(),
+				ataques.get(ataqueAtual).getTipo().getLargura1(), ataques.get(ataqueAtual).getTipo().getAltura1()),
+				posXataque, posYataque, new Vector2(1f, 2.5f), ataques.get(ataqueAtual).getTipo(), velocidadeAtaque
+			);
+
+			novoAtaque.setColidiu(false);
+			novoAtaque.setPodeDisparar(true);
+			ataquesAtivos.add(novoAtaque);
+		}
 	}
 
 	@Override
-	protected void pular() {
+	public void morrer(){
+		if(vida <= 0){
+			morreu = true;
+			iterarDeltaTime();
+			setRegion(774, 0, 43, 60);
 
-	}
-
-	@Override
-	protected void parado() {
-		velX = 0;            
-        animar(6, 43, 0, 0, 43, 60);
-	}
-
-	@Override
-	public void tomarDano(int dano) {
-
+			if (deltaTime >= 5.0f) {
+				setPosicao(-500, -500);
+			}
+		}
 	}
 
 }

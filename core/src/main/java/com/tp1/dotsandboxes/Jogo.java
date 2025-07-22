@@ -1,16 +1,17 @@
 package com.tp1.dotsandboxes;
 
+import com.tp1.dotsandboxes.Iterators.InimigoIterator;
+import com.tp1.dotsandboxes.Iterators.PersonagemIterator;
+import com.tp1.dotsandboxes.Iterators.EntidadeIterator;
+
+import java.util.Random;
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -20,34 +21,32 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.Texture;
 
-import java.util.ArrayList;
-
-/*
- * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all
- * platforms.
- */
-
 public class Jogo extends Game {
 
     private Texture texturaMegaMan;
     private Texture texturaPenguin;
-    private Texture texturaNowthrower;
-    private Texture texturaJamminger;
+    private Texture texturaTrower;
+    private Texture texturaJaminger;
     private Texture texturaFundo;
-
-    private ShapeRenderer shapeRenderer;
-
-    private MegaMan megaMan;
-    private Pinguim penguin;
-    private PersonagemNaoMovel nowthrower;
-    private PersonagemNaoMovel jamminger;
 
     private SpriteBatch batch;
     private OrthographicCamera camera;
     private Vector2 cameraFoco;
     private Viewport viewport;
 
+    ArrayList<Vector2> posicoesValidas;
+    private Random random;
+
     private Mapa mapa;
+
+    private GerenciadorColisoes gerenciadorColisoes;
+    private InimigoIterator inimigos;
+    private PersonagemIterator personagens;
+
+    private MegaMan megaMan;
+    private Pinguim penguin;
+
+    private ShapeRenderer shapeRenderer;
 
     @Override
     public void create() {
@@ -62,36 +61,88 @@ public class Jogo extends Game {
         viewport = new FillViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         shapeRenderer = new ShapeRenderer();
 
+        random = new Random();
+        posicoesValidas = new ArrayList<>();
+
+        gerenciadorColisoes = new GerenciadorColisoes();
+        inimigos = new InimigoIterator();
+        personagens = new PersonagemIterator();
+
         carregaTexturas();
-        criaPersonagens();
         criaMapa();
-    }
-
-    private void carregaTexturas(){
-        texturaMegaMan = new Texture("imagens/MegaMan/megaManNovo.png");
-        texturaPenguin = new Texture("imagens/ChilPenguin/inimigos/Penguin/penguinNovo.png");
-        texturaNowthrower = new Texture("imagens/ChilPenguin/inimigos/Nowthrower/now.png");
-        texturaJamminger = new Texture("imagens/ChilPenguin/inimigos/Jamminger/jammingerAtacando.png");
-        texturaFundo = new Texture("imagens/backgroundNeve.jpg");
-    }
-
-    private void criaPersonagens(){
-        megaMan = new MegaMan(texturaMegaMan, 500, 1400);
-        penguin = new Pinguim(texturaPenguin, 600, 600-44);
-        nowthrower = new PersonagemNaoMovel(texturaNowthrower, new TextureRegion(texturaNowthrower, 0, 0, 35, 58),
-            100, 400, new Vector2(0.5f, 2.5f), 6);
-        jamminger = new PersonagemNaoMovel(texturaJamminger, new TextureRegion(texturaJamminger, 0, 0, 28, 35),
-            100, 400, new Vector2(0.3f, 3.0f), 2);
+        criaPersonagens();
     }
 
     private void criaMapa(){
         mapa = new Mapa("maps/mapaPenguim.tmx", 800, 600);
     }
 
+    private void carregaTexturas(){
+        TipoAtaque.carregarTodasTexturas();
+        texturaMegaMan = new Texture("imagens/MegaMan/megaMan.png");
+        texturaPenguin = new Texture("imagens/ChilPenguin/inimigos/Penguin/penguin.png");
+        texturaTrower = new Texture("imagens/ChilPenguin/inimigos/now.png");
+        texturaJaminger = new Texture("imagens/ChilPenguin/inimigos/jaminger.png");
+        texturaFundo = new Texture("imagens/backgroundNeve.jpg");
+    }
+
+    private void criaPersonagens(){
+        megaMan = new MegaMan(texturaMegaMan, 500, 1400);
+        criarInimigos();
+
+        personagens.add(megaMan);
+        personagens.add(penguin);
+    }
+
+    private void criarInimigos(){
+        penguin = new Pinguim(texturaPenguin, 1000, 1400);
+        inimigos.add(penguin);
+        
+        Ataque ataqueTrower = new Ataque(new TextureRegion(TipoAtaque.BOLA_NEVE.getTextura(), 
+		TipoAtaque.BOLA_NEVE.getCordX1(), TipoAtaque.BOLA_NEVE.getCordY1(),
+		TipoAtaque.BOLA_NEVE.getLargura1(), TipoAtaque.BOLA_NEVE.getAltura1()), 
+		0, 0, new Vector2(0.05f, 0.5f), TipoAtaque.BOLA_NEVE, -5);
+
+        Ataque ataqueJaminger = new Ataque(new TextureRegion(TipoAtaque.DISCO.getTextura(), 
+		TipoAtaque.DISCO.getCordX1(), TipoAtaque.DISCO.getCordY1(),
+		TipoAtaque.DISCO.getLargura1(), TipoAtaque.DISCO.getAltura1()), 
+		0, 0, new Vector2(0.05f, 0.5f), TipoAtaque.DISCO, -5);
+            
+        determinarPosicoesValidas();
+        for(int i=0; i<15; i++){
+            int indexPosicao = random.nextInt(posicoesValidas.size());
+            int sortearPersonagem = random.nextInt(2);
+            if(sortearPersonagem == 0){
+                Jaminger jaminger = new Jaminger(texturaJaminger, posicoesValidas.get(indexPosicao).x, 
+                posicoesValidas.get(indexPosicao).y, new Vector2(0.2f, 2.0f), ataqueJaminger);
+                inimigos.add(jaminger);
+                personagens.add(jaminger);
+            }else{
+                Trower trower = new Trower(texturaTrower, posicoesValidas.get(indexPosicao).x, 
+                posicoesValidas.get(indexPosicao).y, new Vector2(0.5f, 2.5f), ataqueTrower);
+                inimigos.add(trower);
+                personagens.add(trower);
+            }
+        }
+        
+    }
+
+    private void determinarPosicoesValidas(){
+        for(Rectangle plataforma : mapa.getChaos()){
+            float posYplataforma = plataforma.y + plataforma.height;
+            float posXplataforma = plataforma.x;
+            if(posXplataforma < 7800){
+                posicoesValidas.add(new Vector2(posXplataforma, posYplataforma));
+            }
+        }
+    }
+
     @Override
     public void render() {
-        
-        cameraFoco.set(megaMan.getPosX(), megaMan.getPosY());
+        super.render();
+
+        cameraFoco.set(megaMan.getPosX() + megaMan.getCorpo().getBoundingRectangle().width, 
+        megaMan.getPosY() + (megaMan.getCorpo().getBoundingRectangle().height/2));
         camera.position.set(cameraFoco, 0);
         camera.update();
         batch.setProjectionMatrix(camera.combined); 
@@ -99,12 +150,53 @@ public class Jogo extends Game {
         Gdx.gl.glClearColor(255f, 255f, 255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        ataquesPersonagens();
-        moverItens();
-        aplicarFisicaMegaMan();
-        desenhaItens();
+        if(!megaMan.isMorreu()){
+            atualizarPersonagens();
+            ataquesPersonagens();
+            colisoes();
 
-        super.render();
+            if(megaMan.isNaPlataforma()){
+                megaMan.setNoAr(false);
+            }
+
+            if(penguin.isNaPlataforma()){
+                penguin.setNoAr(false);
+            }
+        }
+
+        desenhaItens();
+    }
+
+     private void atualizarPersonagens(){
+        personagens.reset();
+        while (personagens.hasNext()) {
+            Personagem personagem = personagens.next();
+            personagem.mover();
+            personagem.atacar();
+            personagem.morrer();
+        }
+        personagens.reset();
+
+        penguin.setPosXmegaMan(megaMan.getPosX()); 
+        penguin.atualizar();
+    }
+
+    private void ataquesPersonagens(){
+        personagens.reset();
+        while (personagens.hasNext()) {
+            Personagem personagem = personagens.next();
+            for(int i=0; i < personagem.getAtaquesAtivos().size(); i++){
+                personagem.getAtaquesAtivos().get(i).disparar();
+            }
+        }
+        personagens.reset();
+    }
+
+    private void colisoes() {    
+        gerenciadorColisoes.colisaoPersonagensPlataformas(mapa.getChaos(), personagens);
+        gerenciadorColisoes.colisaoAtaquesPlataformas(mapa.getChaos(), personagens);
+        gerenciadorColisoes.colisaoAtaquesPersonagens(personagens);
+        gerenciadorColisoes.colisaoMegaManInimigos(megaMan, inimigos);
     }
 
     private void desenhaItens(){
@@ -121,62 +213,40 @@ public class Jogo extends Game {
         mapa.render(camera);
         
         batch.begin();
-        megaMan.draw(batch);
-        penguin.draw(batch);
-        nowthrower.draw(batch);
-        jamminger.draw(batch);
+
+        desenharEntidades();
+        desenharAtaques();
+
         batch.end();
         
-    
         // Desenha colisores em vermelho
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.RED);
-        for (Rectangle r : mapa.getChoes()) {
+        for (Rectangle r : mapa.getChaos()) {
             shapeRenderer.rect(r.x, r.y, r.width, r.height);
         }
         shapeRenderer.end();
     }
 
-    private void aplicarFisicaMegaMan() {
-        Rectangle pe = new Rectangle(megaMan.getCorpo().getBoundingRectangle().x, megaMan.getCorpo().getBoundingRectangle().y, megaMan.getCorpo().getBoundingRectangle().width - 3, 1);
-        boolean emPlataforma = false;
-    
-        for (Rectangle chao : mapa.getChoes()) {
-            if (pe.overlaps(chao)) {
-                emPlataforma = true;
-                megaMan.setPosY(chao.y + megaMan.getCorpo().getBoundingRectangle().height + chao.height); // posiciona exatamente no topo
-                megaMan.setVelocidadeY(0);
-                megaMan.setNoAr(false);
-                break;
+    private void desenharEntidades(){
+        personagens.reset();
+        while (personagens.hasNext()) {
+            Personagem personagem = personagens.next();
+            personagem.draw(batch);
+        }
+        personagens.reset();
+    }
+
+    private void desenharAtaques(){
+        personagens.reset();
+        while (personagens.hasNext()) {
+            Personagem personagem = personagens.next();
+            for(int i=0; i < personagem.getAtaquesAtivos().size(); i++){
+                personagem.getAtaquesAtivos().get(i).draw(batch);;
             }
         }
-        
-        if (!emPlataforma) {
-            megaMan.setNoAr(true);
-        }
-
-        if(megaMan.getNoAr()){
-            megaMan.sofrerGravidade(
-                megaMan.getPosY(),
-                7,
-                34, 374,
-                0, 34, 46,
-                578, 0, 34, 46,
-                megaMan.getIsMegaMan()
-            );
-        }
-    }
-
-    private void moverItens(){
-        megaMan.mover();
-        penguin.mover();
-        nowthrower.animar(7, 35, 0, 0, 35, 58);
-        jamminger.animar(7, 39, 0, 0, 39, 72);
-    }
-
-    private void ataquesPersonagens(){
-        megaMan.atacar();
+        personagens.reset();
     }
 
     @Override
@@ -193,10 +263,11 @@ public class Jogo extends Game {
             batch.dispose();
         }
 
+        TipoAtaque.disposeTodasTexturas();
         texturaMegaMan.dispose();
         texturaPenguin.dispose();
-        texturaNowthrower.dispose();
-        texturaJamminger.dispose();
+        texturaTrower.dispose();
+        texturaJaminger.dispose();
 
         super.dispose();
     }
