@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public class Chefao extends PersonagemMovel {
+public class Chefao extends Personagem {
 
 	protected Random random;
 	protected int quantAcoes;

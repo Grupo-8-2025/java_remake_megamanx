@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
 
-public class MegaMan extends PersonagemMovel { 
+public class MegaMan extends Personagem { 
 
 	private int ataqueAtual;
 	private ArrayList<Ataque> ataques;
@@ -24,6 +24,8 @@ public class MegaMan extends PersonagemMovel {
 	private boolean naEscada;
 	private boolean naParede;
 	private boolean noRider;
+	private boolean podeAndarDireita;
+	private boolean podeAndarEsquerda;
 
 	private boolean colidiuInimigo;
 	private boolean tomandoDano;
@@ -43,14 +45,14 @@ public class MegaMan extends PersonagemMovel {
 		naEscada = false;
 		naParede = false;
 		noRider = false;
+		podeAndarDireita = true;
+		podeAndarEsquerda = true;
 		colidiuInimigo = false;
 		tomandoDano = false;
 		ganhouJogo = false;
 
 		paraDireita = true;
 		paraEsquerda = false;
-		naPlataforma = false;
-		noAr = true;
 
 		criarAtaques();
 	}
@@ -82,16 +84,13 @@ public class MegaMan extends PersonagemMovel {
 			-100, -100, new Vector2(0.3f, 1.2f), TipoAtaque.TIRO_VERDE, 0)
 		);
 
-		ataques.add(
-			new Ataque(new TextureRegion(TipoAtaque.TIRO_ROSA.getTextura(), 
-			TipoAtaque.TIRO_ROSA.getCordX1(), TipoAtaque.TIRO_ROSA.getCordY1(),
-			TipoAtaque.TIRO_ROSA.getLargura1(), TipoAtaque.TIRO_ROSA.getAltura1()), 
-			-100, -100, new Vector2(0.5f, 1.5f), TipoAtaque.TIRO_ROSA, 0)
-		);
-
 		ataque = ataques.get(0);
 	}
 
+
+	public ArrayList<Ataque> getAtaquesAtivos(){
+		return ataquesAtivos;
+	}
 
 	public boolean isNaEscada() {
 		return naEscada;
@@ -115,6 +114,14 @@ public class MegaMan extends PersonagemMovel {
 
 	public void setNoRider(boolean noRider) {
 		this.noRider = noRider;
+	}
+
+	public void setPodeAndarDireita(boolean podeAndarDireita) {
+		this.podeAndarDireita = podeAndarDireita;
+	}
+
+	public void setPodeAndarEsquerda(boolean podeAndarEsquerda) {
+		this.podeAndarEsquerda = podeAndarEsquerda;
 	}
 
 	public boolean isColidiuInimigo() {
@@ -193,55 +200,59 @@ public class MegaMan extends PersonagemMovel {
 	}
 
 	private void moverParaDireita(){
-        if(testarTecla(Input.Keys.RIGHT)){
-            paraDireita = true;
-            paraEsquerda = false;
-            apertouRight = true;
+		if(podeAndarDireita){
+			if(testarTecla(Input.Keys.RIGHT)){
+				paraDireita = true;
+				paraEsquerda = false;
+				apertouRight = true;
 
-            velX = 5;
-            posX = posX + velX;
-            setPosicao(posX, posY);
-            
-			if(testarTecla(Input.Keys.X)){
-				animar(posX, 11, 38, 374, 14, 38, 36);
-				apertouX = true;
+				velX = 5;
+				posX = posX + velX;
+				setPosicao(posX, posY);
+				
+				if(testarTecla(Input.Keys.X)){
+					animar(posX, 11, 38, 374, 14, 38, 36);
+					apertouX = true;
+				}else{
+					animar(posX, 11, 34, 0, 16, 34, 34);
+					apertouX = false;
+				}
+
 			}else{
-				animar(posX, 11, 34, 0, 16, 34, 34);
-				apertouX = false;
+				if(apertouRight){
+					setRegion(0, 16, 34, 34); 
+					apertouRight = false;
+				}
 			}
-
-        }else{
-            if(apertouRight){
-                setRegion(0, 16, 34, 34); 
-                apertouRight = false;
-            }
-        }
+		}
     }
 
 	private void moverParaEsquerda() {
-		if(testarTecla(Input.Keys.LEFT)){
-            paraDireita = false;
-            paraEsquerda = true;
-            apertouLeft = true;
+		if(podeAndarEsquerda){
+			if(testarTecla(Input.Keys.LEFT)){
+				paraDireita = false;
+				paraEsquerda = true;
+				apertouLeft = true;
 
-            velX = -5;
-            posX = posX + velX;
-            setPosicao(posX, posY);
-            
-			if(testarTecla(Input.Keys.X)){
-				animar(posX, 11, 38, 374, 14, 38, 36);
-				apertouX = true;
+				velX = -5;
+				posX = posX + velX;
+				setPosicao(posX, posY);
+				
+				if(testarTecla(Input.Keys.X)){
+					animar(posX, 11, 38, 374, 14, 38, 36);
+					apertouX = true;
+				}else{
+					animar(posX, 11, 34, 0, 16, 34, 34);
+					apertouX = false;
+				}
+
 			}else{
-				animar(posX, 11, 34, 0, 16, 34, 34);
-				apertouX = false;
+				if(apertouLeft){
+					setRegion(0, 16, 34, 34); 
+					apertouLeft = false;
+				}
 			}
-
-        }else{
-            if(apertouLeft){
-                setRegion(0, 16, 34, 34); 
-                apertouLeft = false;
-            }
-        }
+		}
 	}
 
 	private void pular() {
@@ -363,8 +374,8 @@ public class MegaMan extends PersonagemMovel {
 	@Override
 	public void atacar() {
 		if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
-			float posXataque = corpo.getX() + corpo.getBoundingRectangle().width + 100;
-			float posYataque = corpo.getY() + 100;
+			float posXataque = corpo.getX() + corpo.getBoundingRectangle().width;
+			float posYataque = corpo.getY();
 
 			int velocidadeAtaque = 0;
 			if(paraDireita){
@@ -374,10 +385,11 @@ public class MegaMan extends PersonagemMovel {
 			}
 
 			Ataque novoAtaque = new Ataque(
-				new TextureRegion(ataques.get(ataqueAtual).getTipo().getTextura(),
-				ataques.get(ataqueAtual).getTipo().getCordX1(), ataques.get(ataqueAtual).getTipo().getCordY1(),
-				ataques.get(ataqueAtual).getTipo().getLargura1(), ataques.get(ataqueAtual).getTipo().getAltura1()),
-				posXataque, posYataque, new Vector2(0.3f, 1.2f), ataques.get(ataqueAtual).getTipo(), velocidadeAtaque
+				new TextureRegion(ataque.getTipo().getTextura(),
+				ataque.getTipo().getCordX1(), ataque.getTipo().getCordY1(),
+				ataque.getTipo().getLargura1(), ataque.getTipo().getAltura1()),
+				posXataque, posYataque, new Vector2(0.3f, 1.2f), 
+				ataque.getTipo(), velocidadeAtaque
 			);
 
 			novoAtaque.setColidiu(false);

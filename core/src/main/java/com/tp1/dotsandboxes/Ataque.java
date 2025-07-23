@@ -3,16 +3,17 @@ package com.tp1.dotsandboxes;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public class Ataque extends EntidadeAnimada {
+public class Ataque extends Entidade {
 
 	private TipoAtaque tipo;
+	private float velocidade;
+
 	private boolean disponivel;
 	private boolean isMegaMan;
 	private boolean colidiu;
 	private boolean podeDisparar;
 	private boolean podeDefinirPosicao;
 	private boolean disparou;
-	private float velocidade;
 
 	Ataque(TextureRegion region, float posX, float posY, Vector2 escala, TipoAtaque tipo, float velocidade){
 		super(tipo.getTextura(), region, posX, posY, escala);
@@ -26,13 +27,6 @@ public class Ataque extends EntidadeAnimada {
 		this.velocidade = velocidade;
 	}
 
-	public void disparar() {
-		if(!colidiu && podeDisparar){
-			setPosicao(posX + velocidade, posY);
-			animar(tipo.getQtdFrames1(), tipo.getIncrementa1(), tipo.getCordX1(), 
-			tipo.getCordY1(), tipo.getLargura1(), tipo.getAltura1());
-		}
-	}
 
 	public boolean isDisparou() {
 		return disparou;
@@ -86,7 +80,13 @@ public class Ataque extends EntidadeAnimada {
 		this.podeDefinirPosicao = podeDefinirPosicao;
 	}
 
-
-	
+	public void disparar() {
+		if(!colidiu && podeDisparar){
+			setPosicao(posX + velocidade, posY);
+			animar(tipo.getQtdFrames1(), tipo.getIncrementa1(), tipo.getCordX1(), 
+			tipo.getCordY1(), tipo.getLargura1(), tipo.getAltura1());
+			//System.out.println(posX);
+		}
+	}
 
 }

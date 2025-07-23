@@ -16,76 +16,127 @@ public class GerenciadorColisoes {
         }else return false;
     }
     
+    public void colisaoMegaManPlataforma(Array<Rectangle> plataformas, MegaMan megaMan){
+        Rectangle corpoMegaman = megaMan.getCorpo().getBoundingRectangle();
+        boolean colidiuDireita = false;
+        boolean colidiuEsquerda = false;
+        for(Rectangle plataforma : plataformas){
+            if(colisaoCorpos(corpoMegaman, plataforma)){
+
+                if(plataforma.height > 50 && plataforma.width > 100){
+                    if(corpoMegaman.y + corpoMegaman.height > plataforma.y + plataforma.height){
+                        if(corpoMegaman.x + corpoMegaman.width > plataforma.x 
+                        && corpoMegaman.x < plataforma.x){
+                            colidiuDireita = true;
+                            megaMan.setPodeAndarDireita(false);
+                            megaMan.setRegion(0, 16, 34, 34);
+                        }
+
+                        if(corpoMegaman.x < plataforma.x + plataforma.width 
+                        && corpoMegaman.x + corpoMegaman.width > plataforma.x + plataforma.width){
+                            colidiuEsquerda = true;
+                            megaMan.setPodeAndarEsquerda(false);
+                            megaMan.setRegion(0, 16, 34, 34);
+                        }
+                    }
+                    break;
+                }
+                
+            }
+            
+        }
+        if(!colidiuDireita) megaMan.setPodeAndarDireita(true);
+        if(!colidiuEsquerda) megaMan.setPodeAndarEsquerda(true);
+    }
+
     public void colisaoPersonagensPlataformas(Array<Rectangle> plataformas, PersonagemIterator personagens){
-        for(Rectangle plataforma : plataformas){
-            personagens.reset();
-            while (personagens.hasNext()) {
-                Personagem personagem = personagens.next();
-                Rectangle corpoPersonagem = personagem.getCorpo().getBoundingRectangle();
-                if (colisaoCorpos(plataforma, corpoPersonagem)) {
-                    personagem.setNaPlataforma(true);
-
-                    float posBaseMegaMan = corpoPersonagem.y;
-                    float posTopoMegaMan = corpoPersonagem.y + corpoPersonagem.height;
-                    float posTopoPlataforma = plataforma.y + plataforma.height;
-                    if(posBaseMegaMan <= posTopoPlataforma && posTopoMegaMan >= posTopoPlataforma){
-                        personagem.setPosicao(personagem.getPosX(),  posTopoPlataforma);
-                    }
-                }
-            }
-            personagens.reset();
-        } 
-    }
-    
-    public void colisaoAtaquesPlataformas(Array<Rectangle> plataformas, PersonagemIterator personagens){
-        for(Rectangle plataforma : plataformas){
-            personagens.reset();
-            while (personagens.hasNext()) {
-                Personagem personagem = personagens.next();
-                for(int i=0; i<personagem.getAtaquesAtivos().size(); i++){
-                    Ataque ataque = personagem.getAtaquesAtivos().get(i);
-                    Rectangle corpoAtaque = ataque.getCorpo().getBoundingRectangle();
-                    if (colisaoCorpos(plataforma, corpoAtaque)) {
-                        ataque.setColidiu(true);
-                        ataque.setPodeDisparar(false);
-                        ataque.setPosicao(-100, -100);
-                        personagem.getAtaquesAtivos().remove(personagem.getAtaquesAtivos().get(i)); 
-                    }
-                }
-            }
-            personagens.reset();
-        } 
-    }
-
-    public void colisaoAtaquesPersonagens(PersonagemIterator personagens) {
         personagens.reset();
         while (personagens.hasNext()) {
-            Personagem atacante = personagens.next();
-            ArrayList<Ataque> ataques = atacante.getAtaquesAtivos();
+            boolean colidiu = false;
+            Personagem personagem = personagens.next();
+            Rectangle corpo = personagem.getCorpo().getBoundingRectangle();
+            for(Rectangle plataforma : plataformas){
+                if(colisaoCorpos(corpo, plataforma)){
 
-            for (int i = ataques.size() - 1; i >= 0; i--) {
-                Ataque ataque = ataques.get(i);
-                Rectangle corpoAtaque = ataque.getCorpo().getBoundingRectangle();
-
-                personagens.reset();
-                while (personagens.hasNext()) {
-                    Personagem alvo = personagens.next();
-                    if (alvo == atacante) continue;
-
-                    Rectangle corpoAlvo = alvo.getCorpo().getBoundingRectangle();
-
-                    if (colisaoCorpos(corpoAlvo, corpoAtaque)) {
-                        ataque.setColidiu(true);
-                        ataque.setPodeDisparar(false);
-                        ataque.setPosicao(-100, -100);
-                        alvo.tomarDano(ataque.getTipo().getDano());
-                        ataques.remove(i);
-                        break; 
+                    if(personagem.getVelY() <= 0 && corpo.y < plataforma.y + 
+                    plataforma.height){
+                        personagem.setNaPlataforma(true);
+                        personagem.setNoAr(false);
+                        personagem.setPosicao(personagem.getPosX(), plataforma.y + 
+                        plataforma.height);
+                        personagem.setVelY(0);
+                        colidiu = true;
                     }
+
+                    float posTopoPersonagem = corpo.y + corpo.height;
+                    if(posTopoPersonagem < plataforma.y + plataforma.height){
+                        personagem.setNaPlataforma(false);
+                        personagem.setNoAr(true);
+                        personagem.setPosicao(personagem.getPosX(), corpo.y);
+                    }
+
+                    break;
                 }
+            }
+            if(!colidiu){
+                personagem.setNaPlataforma(false);
+                personagem.setNoAr(true);
             }
         }
         personagens.reset();
+    } 
+    
+    
+    public void colisaoAtaquesPlataformas(Array<Rectangle> plataformas, ArrayList<Ataque> ataques){
+        for(Rectangle plataforma : plataformas){
+            for(int i=0; i<ataques.size(); i++){
+                Ataque ataque = ataques.get(i);
+                Rectangle corpoAtaque = ataque.getCorpo().getBoundingRectangle();
+                if (colisaoCorpos(plataforma, corpoAtaque)) {
+                    ataque.setColidiu(true);
+                    ataque.setPodeDisparar(false);
+                    ataque.setPosicao(-100, -100);
+                    ataques.remove(ataque);
+                }
+            }
+        }
+    }
+
+    public void colisaoAtaquesMegaman(MegaMan megaMan, ArrayList<Ataque> ataques) {
+        Rectangle corpoMegaman = megaMan.getCorpo().getBoundingRectangle();
+        for (int i = 0; i < ataques.size(); i++) {
+            Ataque ataque = ataques.get(i);
+            Rectangle corpoAtaque = ataque.getCorpo().getBoundingRectangle();
+
+            if(colisaoCorpos(corpoAtaque, corpoMegaman)){
+                ataque.setColidiu(true);
+                ataque.setPodeDisparar(false);
+                ataque.setPosicao(-100, -100);
+                megaMan.tomarDano(ataque.getTipo().getDano());
+                System.out.println("Personagem e ataque");
+                ataques.remove(i);
+                break; 
+            }
+
+        } 
+    }
+
+    public void colisaoAtaquesMegamanInimigos(Inimigo inimigo, ArrayList<Ataque> ataques){
+        Rectangle corpoPersonagem = inimigo.getRect();
+        for (int i = 0; i < ataques.size(); i++) {
+            Ataque ataque = ataques.get(i);
+            Rectangle corpoAtaque = ataque.getCorpo().getBoundingRectangle();
+
+            if(colisaoCorpos(corpoAtaque, corpoPersonagem)){
+                ataque.setColidiu(true);
+                ataque.setPodeDisparar(false);
+                ataque.setPosicao(-100, -100);
+                inimigo.tomarDano(ataque.getTipo().getDano());
+                ataques.remove(i);
+                break; 
+            }
+
+        } 
     }
 
 

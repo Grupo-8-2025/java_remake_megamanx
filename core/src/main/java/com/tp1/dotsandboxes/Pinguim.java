@@ -9,24 +9,19 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class Pinguim extends Chefao implements Inimigo {
 
-	private float posXmegaMan;
 	private int ataqueAtual;
 	private ArrayList<Ataque> ataques;
 	private ArrayList<Ataque> ataquesAtivos;
-	private ArrayList<Personagem> pinguinsGelo;
 
 	public Pinguim(Texture textura, float posX, float posY) {
 		super(textura, new TextureRegion(textura, 602, 0, 43, 60), posX, posY, 
 		new Vector2(0.1f, 3.0f), 32, 0.05f, null,  0, 0);	
-		posXmegaMan = 0;
 
 		paraEsquerda = true;
 		paraDireita = false;
-		naPlataforma = false;
-		quantAcoes = 5;
+		quantAcoes = 4;
 
 		criarAtaques();
-		criarPinguinsGelo();
 	}
 
 	public void criarAtaques(){
@@ -49,40 +44,9 @@ public class Pinguim extends Chefao implements Inimigo {
 			-100, -100, new Vector2(1f, 2.5f), TipoAtaque.SOPRO_GELO, 0)
 		);
 
-		ataques.add(
-			new Ataque(new TextureRegion(TipoAtaque.PINGUIN_GELO.getTextura(), 
-			TipoAtaque.PINGUIN_GELO.getCordX1(), TipoAtaque.TIRO_AZUL.getCordY1(),
-			TipoAtaque.PINGUIN_GELO.getLargura1(), TipoAtaque.PINGUIN_GELO.getAltura1()), 
-			-100, -100, new Vector2(1f, 3f), TipoAtaque.PINGUIN_GELO, 0)
-		);
-
 		ataque = ataques.get(0);
 	}
 
-	public void criarPinguinsGelo(){
-		pinguinsGelo = new ArrayList<>();
-
-		pinguinsGelo.add(new Personagem(TipoAtaque.PINGUIN_GELO.getTextura(), 
-		new TextureRegion(TipoAtaque.PINGUIN_GELO.getTextura(), 
-		TipoAtaque.PINGUIN_GELO.getCordX2(), TipoAtaque.PINGUIN_GELO.getCordY2(),
-		TipoAtaque.PINGUIN_GELO.getLargura2(), TipoAtaque.PINGUIN_GELO.getAltura2()), 
-		-100, -100, new Vector2(1f, 3f), 
-		5, 0, null));
-
-		pinguinsGelo.add(new Personagem(TipoAtaque.PINGUIN_GELO.getTextura(), 
-		new TextureRegion(TipoAtaque.PINGUIN_GELO.getTextura(), 
-		TipoAtaque.PINGUIN_GELO.getCordX2(), TipoAtaque.PINGUIN_GELO.getCordY2(),
-		TipoAtaque.PINGUIN_GELO.getLargura2(), TipoAtaque.PINGUIN_GELO.getAltura2()), 
-		-100, -100, new Vector2(1f, 3f), 
-		5, 0, null));
-
-		pinguinsGelo.add(new Personagem(TipoAtaque.PINGUIN_GELO.getTextura(), 
-		new TextureRegion(TipoAtaque.PINGUIN_GELO.getTextura(), 
-		TipoAtaque.PINGUIN_GELO.getCordX2(), TipoAtaque.PINGUIN_GELO.getCordY2(),
-		TipoAtaque.PINGUIN_GELO.getLargura2(), TipoAtaque.PINGUIN_GELO.getAltura2()), 
-		-100, -100, new Vector2(1f, 3f), 
-		5, 0, null));
-	}
 
 
 	public Rectangle getRect(){
@@ -93,12 +57,18 @@ public class Pinguim extends Chefao implements Inimigo {
 		return dano;
 	}
 
-	public void setPosXmegaMan(float posXmegaMan) {
-		this.posXmegaMan = posXmegaMan;
+	public ArrayList<Ataque> getAtaquesAtivos(){
+		return ataquesAtivos;
 	}
 
-	public ArrayList<Personagem> getPinguinsGelo() {
-		return pinguinsGelo;
+	public void tomarDano(float dano) {
+		vida = vida - dano;
+		tomandoDano = true;
+		deltaTime = 0f;
+	}
+
+	public void setPosXmegaMan(float posXmegaMan) {
+		this.posXmegaMan = posXmegaMan;
 	}
 
 	@Override
@@ -138,8 +108,6 @@ public class Pinguim extends Chefao implements Inimigo {
 						determinarAtaqueBolaGelo();
 					}else if(determinaAcao == 3){
 						determinarAtaqueSoproGelo();
-					}else if(determinaAcao == 4){
-						determinarAtaquePinguinGelo();
 					}
 				} 
 			}
@@ -154,38 +122,26 @@ public class Pinguim extends Chefao implements Inimigo {
 	}
 
 	private void determinarAcaoParado(){
-		duracaoAcao = 3f;
+		duracaoAcao = 2f;
 		parado(3, 43, 0, 0, 43, 60);
 		podeAtacar = false;
 		podeMover = false;
 	}
 
 	private void determinarAtaqueBolaGelo(){
-		duracaoAcao = 2.f;
+		duracaoAcao = 3.f;
 		ataqueAtual = 0;
-		//ataque = ataques.get(ataqueAtual);
+		ataque = ataques.get(ataqueAtual);
 		podeAtacar = true;
 		podeMover = false;
 	}
 
 	private void determinarAtaqueSoproGelo(){
-		duracaoAcao = 2f;
+		duracaoAcao = 3f;
 		ataqueAtual = 1;
-		//this.ataque = ataques.get(ataqueAtual);
+		ataque = ataques.get(ataqueAtual);
 		podeAtacar = true;
 		podeMover = false;
-	}
-
-	private void determinarAtaquePinguinGelo(){
-		duracaoAcao = 3.f;
-		ataqueAtual = 2;
-		//ataque = ataques.get(ataqueAtual);
-		podeAtacar = true;
-		podeMover = false;
-
-		float posXpinguin = corpo.getX() - corpo.getBoundingRectangle().width;
-		float posYpinguin = corpo.getY() - corpo.getBoundingRectangle().height/2;
-		pinguinsGelo.get(0).setPosicao(posXpinguin, posYpinguin);
 	}
 
 	private void delimitarMovimento(){
@@ -221,10 +177,11 @@ public class Pinguim extends Chefao implements Inimigo {
 
 	@Override
 	public void atacar(){
-		if(podeAtacar &&  deltaTime <= 0.05f){
+		if(podeAtacar &&  deltaTime <= 0f && Math.abs(posXmegaMan - posX) < 600){
 			setRegion(688, 0, 43, 60);
-			float posXataque = corpo.getX() - corpo.getBoundingRectangle().width;
-			float posYataque = corpo.getY() - corpo.getBoundingRectangle().height/2;
+
+			float posXataque = corpo.getX() - corpo.getBoundingRectangle().width + 5f;
+			float posYataque = corpo.getY() - corpo.getHeight() - ataque.getCorpo().getHeight() - 10f;
 
 			int velocidadeAtaque = 0;
 			if(posXmegaMan > posX){
@@ -238,10 +195,11 @@ public class Pinguim extends Chefao implements Inimigo {
 			}
 
 			Ataque novoAtaque = new Ataque(
-				new TextureRegion(ataques.get(ataqueAtual).getTipo().getTextura(),
-				ataques.get(ataqueAtual).getTipo().getCordX1(), ataques.get(ataqueAtual).getTipo().getCordY1(),
-				ataques.get(ataqueAtual).getTipo().getLargura1(), ataques.get(ataqueAtual).getTipo().getAltura1()),
-				posXataque, posYataque, new Vector2(1f, 2.5f), ataques.get(ataqueAtual).getTipo(), velocidadeAtaque
+				new TextureRegion(ataque.getTipo().getTextura(),
+				ataque.getTipo().getCordX1(), ataque.getTipo().getCordY1(),
+				ataque.getTipo().getLargura1(), ataque.getTipo().getAltura1()),
+				posXataque, posYataque, new Vector2(1f, 2.5f), 
+				ataque.getTipo(), velocidadeAtaque
 			);
 
 			novoAtaque.setColidiu(false);

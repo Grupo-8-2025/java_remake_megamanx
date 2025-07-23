@@ -17,9 +17,9 @@ public enum TipoAtaque {
     false, 3, 28, 0, 0, 28, 32, 1, 28, 84, 0, 28, 32),
     SOPRO_GELO(0, 5, "imagens/ChilPenguin/inimigos/Penguin/sopro.png", true, 
     false, 2, 17, 0, 0, 17, 16, 2, 17, 0, 0, 17, 16),
-    BOLA_NEVE(2, 3, "imagens/ChilPenguin/inimigos/neve.png", true, 
+    BOLA_NEVE(2, -5, "imagens/ChilPenguin/inimigos/neve.png", true, 
     false, 1, 8, 0, 32, 8, 8, 3, 40, 40, 0, 40, 40),
-    DISCO(3, 7, "imagens/ChilPenguin/inimigos/disco.png", true, 
+    DISCO(3, -5, "imagens/ChilPenguin/inimigos/disco.png", true, 
     false, 1, 15, 0, 0, 15, 15, 1, 15, 15, 0, 15, 15);
 
     private final int dano;

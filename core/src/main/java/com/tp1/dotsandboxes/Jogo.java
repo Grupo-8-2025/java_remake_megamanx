@@ -2,7 +2,6 @@ package com.tp1.dotsandboxes;
 
 import com.tp1.dotsandboxes.Iterators.InimigoIterator;
 import com.tp1.dotsandboxes.Iterators.PersonagemIterator;
-import com.tp1.dotsandboxes.Iterators.EntidadeIterator;
 
 import java.util.Random;
 import java.util.ArrayList;
@@ -87,15 +86,15 @@ public class Jogo extends Game {
     }
 
     private void criaPersonagens(){
-        megaMan = new MegaMan(texturaMegaMan, 500, 1400);
         criarInimigos();
+        megaMan = new MegaMan(texturaMegaMan, 8295, 2005);
 
         personagens.add(megaMan);
         personagens.add(penguin);
     }
 
     private void criarInimigos(){
-        penguin = new Pinguim(texturaPenguin, 1000, 1400);
+        penguin = new Pinguim(texturaPenguin, 8635, 2300);
         inimigos.add(penguin);
         
         Ataque ataqueTrower = new Ataque(new TextureRegion(TipoAtaque.BOLA_NEVE.getTextura(), 
@@ -109,29 +108,45 @@ public class Jogo extends Game {
 		0, 0, new Vector2(0.05f, 0.5f), TipoAtaque.DISCO, -5);
             
         determinarPosicoesValidas();
+
+        int indexPosicaoAnterior = -1;
         for(int i=0; i<15; i++){
             int indexPosicao = random.nextInt(posicoesValidas.size());
-            int sortearPersonagem = random.nextInt(2);
-            if(sortearPersonagem == 0){
-                Jaminger jaminger = new Jaminger(texturaJaminger, posicoesValidas.get(indexPosicao).x, 
-                posicoesValidas.get(indexPosicao).y, new Vector2(0.2f, 2.0f), ataqueJaminger);
-                inimigos.add(jaminger);
-                personagens.add(jaminger);
-            }else{
-                Trower trower = new Trower(texturaTrower, posicoesValidas.get(indexPosicao).x, 
-                posicoesValidas.get(indexPosicao).y, new Vector2(0.5f, 2.5f), ataqueTrower);
-                inimigos.add(trower);
-                personagens.add(trower);
+
+            if(indexPosicaoAnterior == -1 || Math.abs(posicoesValidas.get(indexPosicao).x - posicoesValidas.get(indexPosicaoAnterior).x) > 800){
+                int sortearPersonagem = random.nextInt(2);
+                if(sortearPersonagem == 0){
+                    Jaminger jaminger = new Jaminger(texturaJaminger, 0, 
+                    0, ataqueJaminger, 0, 5);
+
+                    float posX = posicoesValidas.get(indexPosicao).x + jaminger.getCorpo().getBoundingRectangle().width;
+                    float posY = posicoesValidas.get(indexPosicao).y;
+                    jaminger.setPosicao(posX, posY);
+
+                    inimigos.add(jaminger);
+                    personagens.add(jaminger);
+                }else{
+                    Trower trower = new Trower(texturaTrower, 0, 
+                    0, ataqueTrower, 0, 5);
+
+                    float posX = posicoesValidas.get(indexPosicao).x - trower.getCorpo().getBoundingRectangle().width;
+                    float posY = posicoesValidas.get(indexPosicao).y;
+                    
+                    trower.setPosicao(posX, posY);
+                    inimigos.add(trower);
+                    personagens.add(trower);
+                }
             }
+            indexPosicaoAnterior = indexPosicao;
         }
         
     }
 
     private void determinarPosicoesValidas(){
         for(Rectangle plataforma : mapa.getChaos()){
-            float posYplataforma = plataforma.y + plataforma.height;
-            float posXplataforma = plataforma.x;
-            if(posXplataforma < 7800){
+            if(plataforma.height > 60 && plataforma.width > 200 && plataforma.x < 7000){
+                float posYplataforma = plataforma.y + plataforma.height + 300;
+                float posXplataforma = plataforma.x + plataforma.width/2;
                 posicoesValidas.add(new Vector2(posXplataforma, posYplataforma));
             }
         }
@@ -154,14 +169,6 @@ public class Jogo extends Game {
             atualizarPersonagens();
             ataquesPersonagens();
             colisoes();
-
-            if(megaMan.isNaPlataforma()){
-                megaMan.setNoAr(false);
-            }
-
-            if(penguin.isNaPlataforma()){
-                penguin.setNoAr(false);
-            }
         }
 
         desenhaItens();
@@ -177,7 +184,13 @@ public class Jogo extends Game {
         }
         personagens.reset();
 
-        penguin.setPosXmegaMan(megaMan.getPosX()); 
+        inimigos.reset();
+        while (inimigos.hasNext()) {
+            Inimigo inimigo = inimigos.next();
+            inimigo.setPosXmegaMan(megaMan.getPosX());
+        }
+        inimigos.reset();
+
         penguin.atualizar();
     }
 
@@ -192,11 +205,25 @@ public class Jogo extends Game {
         personagens.reset();
     }
 
-    private void colisoes() {    
-        gerenciadorColisoes.colisaoPersonagensPlataformas(mapa.getChaos(), personagens);
-        gerenciadorColisoes.colisaoAtaquesPlataformas(mapa.getChaos(), personagens);
-        gerenciadorColisoes.colisaoAtaquesPersonagens(personagens);
+    private void colisoes() { 
+        gerenciadorColisoes.colisaoPersonagensPlataformas(mapa.getChaos(), personagens);   
+        gerenciadorColisoes.colisaoMegaManPlataforma(mapa.getChaos(), megaMan);
         gerenciadorColisoes.colisaoMegaManInimigos(megaMan, inimigos);
+
+        inimigos.reset();
+        while (inimigos.hasNext()) {
+            Inimigo inimigo = inimigos.next();
+            gerenciadorColisoes.colisaoAtaquesMegaman(megaMan, inimigo.getAtaquesAtivos());
+            gerenciadorColisoes.colisaoAtaquesMegamanInimigos(inimigo, megaMan.getAtaquesAtivos());
+        }
+        inimigos.reset();
+
+        personagens.reset();
+        while (personagens.hasNext()) {
+            Personagem personagem = personagens.next();
+            gerenciadorColisoes.colisaoAtaquesPlataformas(mapa.getChaos(), personagem.getAtaquesAtivos());
+        }
+        personagens.reset();
     }
 
     private void desenhaItens(){
@@ -215,11 +242,9 @@ public class Jogo extends Game {
         batch.begin();
 
         desenharEntidades();
-        desenharAtaques();
 
         batch.end();
         
-        // Desenha colisores em vermelho
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.RED);
@@ -230,6 +255,7 @@ public class Jogo extends Game {
     }
 
     private void desenharEntidades(){
+        desenharAtaques();
         personagens.reset();
         while (personagens.hasNext()) {
             Personagem personagem = personagens.next();
