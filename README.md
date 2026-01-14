@@ -1,56 +1,52 @@
-<<<<<<< Updated upstream
-# TrabalhoPratico2
-Esse repositório trata-se dos arquivos relacionados ao Trabalho Pratico 2 de LLP2 sobre o tema Mega Man X seguindo o padrão Iterator
-=======
-# Jogo-MegaManX
+# 🎮 Remake MegaManX 🎮
 
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
+Bem-vindo ao repositório **Remake MegaManX**! Este projeto foi desenvolvido como trabalho prático da matéria Linguagem e Técnicas de Programação 2 no curso técnico de informática do CEFET-MG.
+O jogo desenvolvido é baseado no primeiro jogo da clássica série de jogos **Mega Man X**. Neste projeto foi utilizado **Java** e a biblioteca de recursos multimídia **LibGDX**.
 
-This project was generated with a template including simple application launchers and a main class extending Game that sets the first screen.
+---
 
-## Como Jogar
+## 🚀 Tecnologias Utilizadas
 
-- Use as *setas do teclado* para se movimentar.
-- Pressione *espaço* para pular.
-- Pressione *X* para atirar.
-- Pressione *C* para trocar o tipo de tiro.
-- Pressione *seta para cima + espaco* para escalar paredes.
-- O jogador tem *16 vidas*.
+- ☕ **Java** JDK 8 ou superior
+- 📦 **Gradle** (ou utilize o Gradle Wrapper incluso no projeto)
+- 🎮 **LibGDX** (já configurado, não é necessário instalar manualmente)
+- 🧠 **IDE recomendada:** IntelliJ IDEA, Visual Studio Code ou qualquer IDE que suporte Java e Gradle
 
-## Platforms
+---
 
-- core: Main module with the application logic shared by all platforms.
-- lwjgl3: Primary desktop platform using LWJGL3; was called 'desktop' in older docs.
+## 🏗️ Como Compilar
 
-## Gradle
+### ✔️ Passo 1: Abrir o terminal na raiz do projeto
 
-This project uses [Gradle](https://gradle.org/) to manage dependencies.
-The Gradle wrapper was included, so you can run Gradle tasks using gradlew.bat or ./gradlew commands.
-Useful Gradle tasks and flags:
+### ✔️ Passo 2: Compilar usando o Gradle Wrapper
 
-- --continue: when using this flag, errors will not stop the tasks from running.
-- --daemon: thanks to this flag, Gradle daemon will be used to run chosen tasks.
-- --offline: when using this flag, cached dependency archives will be used.
-- --refresh-dependencies: this flag forces validation of all dependencies. Useful for snapshot versions.
-- build: builds sources and archives of every project.
-- cleanEclipse: removes Eclipse project data.
-- cleanIdea: removes IntelliJ project data.
-- clean: removes build folders, which store compiled classes and built archives.
-- eclipse: generates Eclipse project data.
-- idea: generates IntelliJ project data.
-- lwjgl3:jar: builds application's runnable jar, which can be found at lwjgl3/build/libs.
-- lwjgl3:run: starts the application.
-- test: runs unit tests (if any).
+## 🎯 Como Rodar o Jogo
 
-Note that most tasks that are not specific to a single project can be run with name: prefix, where the name should be replaced with the ID of a specific project.
-For example, core:clean removes build folder only from the core project.
+### ✅ Pelo Terminal
 
-## Link Do Relatório Técnico
-[Relatório Técnico](https://docs.google.com/document/d/10jIZ7w_T9xnYYpN8TUbrrdX7LQetovOOtWqiMzZMLGo/edit?usp=sharing)
+**No Windows (Prompt de Comando ou PowerShell depois de acessar a pasta root do projeto):**
 
+```bash
+gradlew lwjgl3:run
+```
 
-## Para Rodar
+---
 
-bash
-gradle run or gradlew run
->>>>>>> Stashed changes
+### ✅ Pela sua IDE
+
+1. Abra o projeto na sua IDE de preferência (**IntelliJ IDEA**, **VS Code**, **Eclipse**, etc.)
+2. Navegue até o arquivo:
+
+```
+lwjgl3/src/main/java/com/tp1/dotsandboxes/lwjgl3/Lwjgl3Launcher.java
+```
+
+3. Clique com o botão direito no arquivo e selecione:
+   - **"Run"** (IntelliJ IDEA, VS Code) ou **"Executar"** (dependendo do idioma da sua IDE)
+
+---
+
+### ⚠️ Importante
+
+- 🔳 Execute o jogo **apenas em modo janela**, na resolução recomendada de **800x500 pixels**.  
+**Não utilize o modo tela cheia**, pois pode gerar erros de escala.
