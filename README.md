@@ -38,7 +38,7 @@ gradlew lwjgl3:run
 2. Navegue até o arquivo:
 
 ```
-lwjgl3/src/main/java/com/tp1/dotsandboxes/lwjgl3/Lwjgl3Launcher.java
+lwjgl3/src/main/java/com/tp2/megamanx/lwjgl3/Lwjgl3Launcher.java
 ```
 
 3. Clique com o botão direito no arquivo e selecione:
