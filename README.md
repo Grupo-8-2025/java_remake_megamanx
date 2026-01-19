@@ -16,9 +16,9 @@ O jogo desenvolvido é baseado no primeiro jogo da clássica série de jogos **M
 
 ## 🏗️ Como Compilar
 
-### ✔️ Passo 1: Abrir o terminal na raiz do projeto
+✔️ Passo 1: Abrir o terminal na raiz do projeto
 
-### ✔️ Passo 2: Compilar usando o Gradle Wrapper
+✔️ Passo 2: Compilar usando o Gradle Wrapper
 
 ## 🎯 Como Rodar o Jogo
 
@@ -29,8 +29,6 @@ O jogo desenvolvido é baseado no primeiro jogo da clássica série de jogos **M
 ```bash
 gradlew lwjgl3:run
 ```
-
----
 
 ### ✅ Pela sua IDE
 
@@ -44,8 +42,22 @@ lwjgl3/src/main/java/com/tp2/megamanx/lwjgl3/Lwjgl3Launcher.java
 3. Clique com o botão direito no arquivo e selecione:
    - **"Run"** (IntelliJ IDEA, VS Code) ou **"Executar"** (dependendo do idioma da sua IDE)
 
----
-
 ### ⚠️ Importante
 
-- 🔳 Execute o jogo **apenas em modo janela**, na resolução recomendada de **800x500 pixels**. **Não utilize o modo tela cheia**, pois pode gerar erros de escala.
+- Execute o jogo **apenas em modo janela**, na resolução recomendada de **800x500 pixels**. **Não utilize o modo tela cheia**, pois pode gerar erros de escala
+
+---
+
+## 🕹️Como Jogar?🕹️
+
+### 🎯 Objetivo
+Derrotar o chefão de cada fase
+
+### 🎮 Controles
+- **⬆️ Cima**: Subir plataformas
+- **⬅️ Esquerda**: Mover-se para a esquerda
+- **➡️ Direita**: Mover-se para a direita
+- **⏺ Espaço**: Pular
+- **Shift**: Ativar o dash
+- **X**: Atirar
+- **C**: Trocar de tiro
