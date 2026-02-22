@@ -1,59 +1,55 @@
-# 🎮 Remake MegaManX 🎮
+# Remake MegaManX
 
-Bem-vindo ao repositório **Remake MegaManX**! Este projeto foi desenvolvido como trabalho prático da matéria Linguagem e Técnicas de Programação 2 no curso técnico de informática do CEFET-MG.
-O jogo desenvolvido é baseado no primeiro jogo da clássica série de jogos **Mega Man X**. Neste projeto foi utilizado **Java** e a biblioteca de recursos multimídia **LibGDX**.
+Jogo desenvolvido em Java inspirado no primeiro título da clássica franquia Mega Man X, com o objetivo de reproduzir suas principais mecânicas de jogabilidade. Este projeto foi desenvolvido como trabalho prático da disciplina Linguagem e Técnicas de Programação 2 no curso técnico de informática do CEFET-MG, utilizando a biblioteca LibGDX para recursos gráficos e multimídia.
 
----
+## Funcionalidades:
+- Movimentação do personagem em plataformas
+- Sistema de pulo e dash
+- Sistema de tiros e troca de tipos de disparo
+- Inimigos e chefão por fase
+- Sistema de colisão
+- Execução do jogo em modo janela
 
-## 🚀 Tecnologias Utilizadas
+## Tecnologias usadas:
+- Java (JDK 8 ou superior)
+- Gradle
+- LibGDX
+- VS Code
 
-- ☕ **Java** JDK 8 ou superior
-- 📦 **Gradle** (ou utilize o Gradle Wrapper incluso no projeto)
-- 🎮 **LibGDX** (já configurado, não é necessário instalar manualmente)
-- 🧠 **IDE recomendada:** IntelliJ IDEA, Visual Studio Code ou qualquer IDE que suporte Java e Gradle
+## Como executar
 
----
-
-## 🏗️ Como Compilar
-
-✔️ **Passo 1**: Abrir o terminal na raiz do projeto
-
-✔️ **Passo 2**: Compilar usando o Gradle Wrapper
-
-## 🎯 Como Rodar o Jogo
-
-### ✅ Pelo Terminal
-
-**No Windows (Prompt de Comando ou PowerShell depois de acessar a pasta root do projeto):**
-
+### Pelo Terminal
+1. Baixe e extraia o arquivo zip do projeto
+2. Copie a pasta principal do projeto para o diretório desejada
+3. Abra o terminal na raiz do projeto
+4. Compile e execute utilizando o comando:
 ```bash
 gradlew lwjgl3:run
 ```
 
-### ✅ Pela sua IDE
-
-1. Abra o projeto na sua IDE de preferência (**IntelliJ IDEA**, **VS Code**, **Eclipse**, etc.)
-2. Navegue até o arquivo:
-
+### Pela sua IDE
+1. Baixe e extraia o arquivo zip do projeto
+2. Copie a pasta principal do projeto para o diretório desejada
+3. Abra o projeto na sua IDE de preferênci
+4. Navegue até o arquivo
 ```
 lwjgl3/src/main/java/com/tp2/megamanx/lwjgl3/Lwjgl3Launcher.java
 ```
+5. Clique com o botão direito no arquivo e selecione Run ou Executar
 
-3. Clique com o botão direito no arquivo e selecione:
-   - **"Run"** (IntelliJ IDEA, VS Code) ou **"Executar"** (dependendo do idioma da sua IDE)
-
-### ⚠️ Importante
-
-- Execute o jogo **apenas em modo janela**, na resolução recomendada de **800x500 pixels**. **Não utilize o modo tela cheia**, pois pode gerar erros de escala
+### Observações importantes:
+- Execute o jogo somente em modo janela
+- Utilize a resolução recomendada de 800x500 pixels
+- Não utilize o modo tela cheia, pois pode ocorrer erro de escala gráfica
 
 ---
 
-## 🕹️Como Jogar?🕹️
+## Como Jogar?
 
-### 🎯 Objetivo
+###Objetivo
 Derrotar o chefão de cada fase
 
-### 🎮 Controles
+### Controles
 - **⬆️ Cima**: Subir plataformas
 - **⬅️ Esquerda**: Mover-se para a esquerda
 - **➡️ Direita**: Mover-se para a direita
@@ -61,3 +57,8 @@ Derrotar o chefão de cada fase
 - **Tecla Shift**: Ativar o dash
 - **Tecla X**: Atirar
 - **Tecla C**: Trocar de tiro
+
+---
+
+## Observação importante
+Este projeto utilizou inteligências artificiais generativas como apoio no desenvolvimento, sendo empregadas para auxiliar na elaboração de código, organização do projeto e documentação.
