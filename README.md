@@ -50,7 +50,7 @@ lwjgl3/src/main/java/com/tp2/megamanx/lwjgl3/Lwjgl3Launcher.java
 
 ## Como Jogar?
 
-###Objetivo
+### Objetivo
 Derrotar o chefão de cada fase
 
 ### Controles
