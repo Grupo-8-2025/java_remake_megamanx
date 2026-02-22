@@ -10,7 +10,6 @@ Jogo desenvolvido em Java inspirado no primeiro título da clássica franquia Me
 - Sistema de tiros e troca de tipos de disparo
 - Inimigos e chefão por fase
 - Sistema de colisão
-- Execução do jogo em modo janela
 
 ## Tecnologias usadas:
 - Java (JDK 8 ou superior)
