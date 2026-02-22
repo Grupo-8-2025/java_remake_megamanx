@@ -40,11 +40,6 @@ lwjgl3/src/main/java/com/tp2/megamanx/lwjgl3/Lwjgl3Launcher.java
 ```
 5. Clique com o botão direito no arquivo e selecione Run ou Executar
 
-### Observações importantes:
-- Execute o jogo somente em modo janela
-- Utilize a resolução recomendada de 800x500 pixels
-- Não utilize o modo tela cheia, pois pode ocorrer erro de escala gráfica
-
 ---
 
 ## Como Jogar?
@@ -60,6 +55,11 @@ Derrotar o chefão de cada fase
 - **Tecla Shift**: Ativar o dash
 - **Tecla X**: Atirar
 - **Tecla C**: Trocar de tiro
+
+### Dicas:
+- Execute o jogo somente em modo janela
+- Utilize a resolução recomendada de 800x500 pixels
+- Não utilize o modo tela cheia, pois pode ocorrer erro de escala gráfica
 
 ---
 
