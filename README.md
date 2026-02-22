@@ -4,14 +4,14 @@ Jogo desenvolvido em Java inspirado no primeiro título da clássica franquia Me
 
 ---
 
-## Funcionalidades:
+## Funcionalidades
 - Movimentação do personagem em plataformas
 - Sistema de pulo e dash
 - Sistema de tiros e troca de tipos de disparo
 - Inimigos e chefão por fase
 - Sistema de colisão
 
-## Tecnologias usadas:
+## Tecnologias usadas
 - Java (JDK 8 ou superior)
 - Gradle
 - LibGDX
@@ -42,7 +42,7 @@ lwjgl3/src/main/java/com/tp2/megamanx/lwjgl3/Lwjgl3Launcher.java
 
 ---
 
-## Como Jogar?
+## Como Jogar
 
 ### Objetivo
 Derrotar o chefão de cada fase
@@ -56,7 +56,7 @@ Derrotar o chefão de cada fase
 - **Tecla X**: Atirar
 - **Tecla C**: Trocar de tiro
 
-### Dicas:
+### Dicas
 - Execute o jogo somente em modo janela
 - Utilize a resolução recomendada de 800x500 pixels
 - Não utilize o modo tela cheia, pois pode ocorrer erro de escala gráfica
