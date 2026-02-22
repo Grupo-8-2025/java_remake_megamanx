@@ -2,6 +2,8 @@
 
 Jogo desenvolvido em Java inspirado no primeiro título da clássica franquia Mega Man X, com o objetivo de reproduzir suas principais mecânicas de jogabilidade. Este projeto foi desenvolvido como trabalho prático da disciplina Linguagem e Técnicas de Programação 2 no curso técnico de informática do CEFET-MG, utilizando a biblioteca LibGDX para recursos gráficos e multimídia.
 
+---
+
 ## Funcionalidades:
 - Movimentação do personagem em plataformas
 - Sistema de pulo e dash
@@ -15,6 +17,8 @@ Jogo desenvolvido em Java inspirado no primeiro título da clássica franquia Me
 - Gradle
 - LibGDX
 - VS Code
+
+---
 
 ## Como executar
 
