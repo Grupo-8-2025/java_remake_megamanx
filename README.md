@@ -20,7 +20,7 @@ Jogo desenvolvido em Java inspirado no primeiro título da clássica franquia Me
 
 ### Pelo Terminal
 1. Baixe e extraia o arquivo zip do projeto
-2. Copie a pasta principal do projeto para o diretório desejada
+2. Copie a pasta principal do projeto para o diretório desejado
 3. Abra o terminal na raiz do projeto
 4. Compile e execute utilizando o comando:
 ```bash
@@ -29,7 +29,7 @@ gradlew lwjgl3:run
 
 ### Pela sua IDE
 1. Baixe e extraia o arquivo zip do projeto
-2. Copie a pasta principal do projeto para o diretório desejada
+2. Copie a pasta principal do projeto para o diretório desejado
 3. Abra o projeto na sua IDE de preferênci
 4. Navegue até o arquivo
 ```
