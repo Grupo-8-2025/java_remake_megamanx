@@ -25,8 +25,10 @@ O projeto é mantido aqui como demonstração de conceito e aprendizado.
 - Movimentação do personagem em plataformas
 - Sistema de pulo e dash
 - Sistema de tiros e troca de tipos de disparo
-- Inimigos e chefão por fase
-- Sistema de colisão
+- Sistema de controle de vidas
+- Presença de inimigos e chefão 
+- Sistema de detecção de colisões
+- Sistema de condições de vitória e game over
 
 ## Tecnologias Usadas
 - Java 
