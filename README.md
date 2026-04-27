@@ -24,9 +24,9 @@ O projeto é mantido aqui como demonstração de conceito e aprendizado.
 ## Funcionalidades
 - Movimentação do personagem em plataformas
 - Sistema de pulo e dash
-- Sistema de tiros e troca de tipos de disparo
+- Sistema de disparos com troca de tipos de tiro
 - Sistema de controle de vidas
-- Presença de inimigos e chefão 
+- Presença de inimigos e chefão
 - Sistema de detecção de colisões
 - Sistema de condições de vitória e game over
 
